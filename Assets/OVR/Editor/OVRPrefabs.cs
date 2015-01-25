@@ -19,9 +19,8 @@ limitations under the License.
 
 ************************************************************************************/
 
-using UnityEngine;
-using System.Collections;
 using UnityEditor;
+using UnityEngine;
 
 //-------------------------------------------------------------------------------------
 // ***** OVRPrefabs
@@ -29,17 +28,17 @@ using UnityEditor;
 // OculusPrefabs adds menu items under the Oculus main menu. It allows for quick creation
 // of the main Oculus prefabs without having to open the Prefab folder and dragging/dropping
 // into the scene.
-class OVRPrefabs
+internal class OVRPrefabs
 {
-	static void CreateOVRCameraController ()
-	{
-		Object ovrcam = AssetDatabase.LoadAssetAtPath ("Assets/OVR/Prefabs/OVRCameraRig.prefab", typeof(UnityEngine.Object));
-		PrefabUtility.InstantiatePrefab(ovrcam);
-    }	
-	
-	static void CreateOVRPlayerController ()
-	{
-		Object ovrcam = AssetDatabase.LoadAssetAtPath ("Assets/OVR/Prefabs/OVRPlayerController.prefab", typeof(UnityEngine.Object));
-		PrefabUtility.InstantiatePrefab(ovrcam);
-    }	
+    private static void CreateOVRCameraController ()
+    {
+        Object ovrcam = AssetDatabase.LoadAssetAtPath("Assets/OVR/Prefabs/OVRCameraRig.prefab", typeof(UnityEngine.Object));
+        PrefabUtility.InstantiatePrefab(ovrcam);
+    }
+
+    private static void CreateOVRPlayerController ()
+    {
+        Object ovrcam = AssetDatabase.LoadAssetAtPath("Assets/OVR/Prefabs/OVRPlayerController.prefab", typeof(UnityEngine.Object));
+        PrefabUtility.InstantiatePrefab(ovrcam);
+    }
 }

@@ -19,61 +19,60 @@ limitations under the License.
 
 ************************************************************************************/
 
-using System.Collections;
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 /// <summary>
-/// Communicates the editor's Game view rect to the Oculus plugin,
-/// allowing distortion rendering to target it.
+/// Communicates the editor's Game view rect to the Oculus plugin, allowing distortion rendering to
+/// target it.
 /// </summary>
 [InitializeOnLoad]
 public class OVRGameView
 {
-	private static Rect cachedPosition;
-	private static EditorWindow cachedEditorWindow = null;
-	private static System.Reflection.MethodInfo cachedMethodInfo = null;
+    private static Rect cachedPosition;
+    private static EditorWindow cachedEditorWindow = null;
+    private static System.Reflection.MethodInfo cachedMethodInfo = null;
 
-	static OVRGameView()
-	{
-		EditorApplication.update += OnUpdate;
-	}
+    static OVRGameView ()
+    {
+        EditorApplication.update += OnUpdate;
+    }
 
-	public static EditorWindow GetMainGameView()
-	{
-		if (cachedEditorWindow == null)
-		{
-			if (cachedMethodInfo == null)
-			{
-				System.Type type = System.Type.GetType("UnityEditor.GameView,UnityEditor");
-	
-				cachedMethodInfo = type.GetMethod(
-					"GetMainGameView",
-					System.Reflection.BindingFlags.NonPublic |
-					System.Reflection.BindingFlags.Static);
-			}
+    public static EditorWindow GetMainGameView ()
+    {
+        if (cachedEditorWindow == null)
+        {
+            if (cachedMethodInfo == null)
+            {
+                System.Type type = System.Type.GetType("UnityEditor.GameView,UnityEditor");
 
-			cachedEditorWindow = cachedMethodInfo.Invoke(null, null) as EditorWindow;
-		}
+                cachedMethodInfo = type.GetMethod(
+                    "GetMainGameView",
+                    System.Reflection.BindingFlags.NonPublic |
+                    System.Reflection.BindingFlags.Static);
+            }
 
-		return cachedEditorWindow;
-	}
+            cachedEditorWindow = cachedMethodInfo.Invoke(null, null) as EditorWindow;
+        }
 
-	static void OnUpdate()
-	{
-		if (OVRManager.instance == null)
-			return;
+        return cachedEditorWindow;
+    }
 
-		EditorWindow gameView = GetMainGameView();
-		if (gameView != null)
-		{
-			Rect pos = gameView.position;
-			if (pos != cachedPosition)
-			{
-				cachedPosition = pos;
+    private static void OnUpdate ()
+    {
+        if (OVRManager.instance == null)
+            return;
 
-				OVRManager.display.SetViewport((int)pos.x, (int)pos.y, (int)pos.width, (int)pos.height);
-			}
-		}
-	}
+        EditorWindow gameView = GetMainGameView();
+        if (gameView != null)
+        {
+            Rect pos = gameView.position;
+            if (pos != cachedPosition)
+            {
+                cachedPosition = pos;
+
+                OVRManager.display.SetViewport((int)pos.x, (int)pos.y, (int)pos.width, (int)pos.height);
+            }
+        }
+    }
 }

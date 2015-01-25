@@ -20,7 +20,6 @@ sysinfo.txt
 
 # No trial data
 *.csv
-*.meta
 
 *.exe
 

@@ -19,104 +19,111 @@ limitations under the License.
 
 ************************************************************************************/
 
-using System;
-using System.Runtime.InteropServices;
-using UnityEngine;
 using Ovr;
+using UnityEngine;
 
 /// <summary>
-/// An infrared camera that tracks the position of a head-mounted display.
+/// An infrared camera that tracks the position of a head-mounted display. 
 /// </summary>
 public class OVRTracker
 {
-	/// <summary>
-	/// The (symmetric) visible area in front of the tracker.
-	/// </summary>
-	public struct Frustum
-	{
-		/// <summary>
-		/// The tracker cannot track the HMD unless it is at least this far away.
-		/// </summary>
-		public float nearZ;
-		/// <summary>
-		/// The tracker cannot track the HMD unless it is at least this close.
-		/// </summary>
-		public float farZ;
-		/// <summary>
-		/// The tracker's horizontal and vertical fields of view in degrees.
-		/// </summary>
-		public Vector2 fov;
-	}
+    /// <summary>
+    /// The (symmetric) visible area in front of the tracker. 
+    /// </summary>
+    public struct Frustum
+    {
+        /// <summary>
+        /// The tracker cannot track the HMD unless it is at least this far away. 
+        /// </summary>
+        public float nearZ;
 
-	/// <summary>
-	/// If true, a tracker is attached to the system.
-	/// </summary>
-	public bool isPresent
-	{
-	    get {
+        /// <summary>
+        /// The tracker cannot track the HMD unless it is at least this close. 
+        /// </summary>
+        public float farZ;
+
+        /// <summary>
+        /// The tracker's horizontal and vertical fields of view in degrees. 
+        /// </summary>
+        public Vector2 fov;
+    }
+
+    /// <summary>
+    /// If true, a tracker is attached to the system. 
+    /// </summary>
+    public bool isPresent
+    {
+        get
+        {
 #if !UNITY_ANDROID || UNITY_EDITOR
-			return (OVRManager.capiHmd.GetTrackingState().StatusFlags & (uint)StatusBits.PositionConnected) != 0;
+            return (OVRManager.capiHmd.GetTrackingState().StatusFlags & (uint)StatusBits.PositionConnected) != 0;
 #else
 			return false;
 #endif
-		}
-	}
+        }
+    }
 
-	/// <summary>
-	/// If true, the tracker can see and track the HMD. Otherwise the HMD may be occluded or the system may be malfunctioning.
-	/// </summary>
-	public bool isPositionTracked
-	{
-		get {
+    /// <summary>
+    /// If true, the tracker can see and track the HMD. Otherwise the HMD may be occluded or the
+    /// system may be malfunctioning.
+    /// </summary>
+    public bool isPositionTracked
+    {
+        get
+        {
 #if !UNITY_ANDROID || UNITY_EDITOR
-			return (OVRManager.capiHmd.GetTrackingState().StatusFlags & (uint)StatusBits.PositionTracked) != 0;
+            return (OVRManager.capiHmd.GetTrackingState().StatusFlags & (uint)StatusBits.PositionTracked) != 0;
 #else
 			return false;
 #endif
-		}
-	}
+        }
+    }
 
-	/// <summary>
-	/// If this is true and a tracker is available, the system will use position tracking when isPositionTracked is also true.
-	/// </summary>
-	public bool isEnabled
-	{
-		get {
+    /// <summary>
+    /// If this is true and a tracker is available, the system will use position tracking when
+    /// isPositionTracked is also true.
+    /// </summary>
+    public bool isEnabled
+    {
+        get
+        {
 #if !UNITY_ANDROID || UNITY_EDITOR
-			uint trackingCaps = OVRManager.capiHmd.GetDesc().TrackingCaps;
-			return (trackingCaps & (uint)TrackingCaps.Position) != 0;
+            uint trackingCaps = OVRManager.capiHmd.GetDesc().TrackingCaps;
+            return (trackingCaps & (uint)TrackingCaps.Position) != 0;
 #else
 			return false;
 #endif
-		}
+        }
 
-		set {
+        set
+        {
 #if !UNITY_ANDROID || UNITY_EDITOR
-			uint trackingCaps = (uint)TrackingCaps.Orientation | (uint)TrackingCaps.MagYawCorrection;
+            uint trackingCaps = (uint)TrackingCaps.Orientation | (uint)TrackingCaps.MagYawCorrection;
 
-			if (value)
-				trackingCaps |= (uint)TrackingCaps.Position;
+            if (value)
+                trackingCaps |= (uint)TrackingCaps.Position;
 
-			OVRManager.capiHmd.ConfigureTracking(trackingCaps, 0);
+            OVRManager.capiHmd.ConfigureTracking(trackingCaps, 0);
 #endif
-		}
-	}
+        }
+    }
 
-	/// <summary>
-	/// Gets the tracker's viewing frustum.
-	/// </summary>
-	public Frustum frustum
-	{
-		get {
+    /// <summary>
+    /// Gets the tracker's viewing frustum. 
+    /// </summary>
+    public Frustum frustum
+    {
+        get
+        {
 #if !UNITY_ANDROID || UNITY_EDITOR
-			HmdDesc desc = OVRManager.capiHmd.GetDesc();
+            HmdDesc desc = OVRManager.capiHmd.GetDesc();
 
-			return new Frustum
-			{
-				nearZ = desc.CameraFrustumNearZInMeters,
-				farZ = desc.CameraFrustumFarZInMeters,
-				fov = Mathf.Rad2Deg * new Vector2(desc.CameraFrustumHFovInRadians, desc.CameraFrustumVFovInRadians)
-			};
+            return new Frustum
+            {
+                nearZ = desc.CameraFrustumNearZInMeters,
+                farZ = desc.CameraFrustumFarZInMeters,
+                fov = Mathf.Rad2Deg * new Vector2(desc.CameraFrustumHFovInRadians, desc.CameraFrustumVFovInRadians)
+            };
 #else
 			return new Frustum
 			{
@@ -125,18 +132,18 @@ public class OVRTracker
 				fov = new Vector2(90.0f, 90.0f)
 			};
 #endif
-		}
-	}
+        }
+    }
 
-	/// <summary>
-	/// Gets the tracker's pose, relative to the head's pose at the time of the last pose recentering.
-	/// </summary>
-	public OVRPose GetPose(double predictionTime = 0d)
-	{
+    /// <summary>
+    /// Gets the tracker's pose, relative to the head's pose at the time of the last pose recentering. 
+    /// </summary>
+    public OVRPose GetPose ( double predictionTime = 0d )
+    {
 #if !UNITY_ANDROID || UNITY_EDITOR
-		double abs_time_plus_pred = Hmd.GetTimeInSeconds() + predictionTime;
+        double abs_time_plus_pred = Hmd.GetTimeInSeconds() + predictionTime;
 
-		return OVRManager.capiHmd.GetTrackingState(abs_time_plus_pred).CameraPose.ToPose();
+        return OVRManager.capiHmd.GetTrackingState(abs_time_plus_pred).CameraPose.ToPose();
 #else
 		return new OVRPose
 		{
@@ -144,5 +151,5 @@ public class OVRTracker
 			orientation = Quaternion.identity
 		};
 #endif
-	}
+    }
 }
