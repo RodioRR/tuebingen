@@ -1,0 +1,27 @@
+
+		//Vector2 targetVector = new Vector2(currentX, currentZ);
+		//Vector2 transformVector = new Vector2(character.transform.position.x, character.transform.position.z);
+		//Vector2 forwardVector = new Vector2(character.transform.forward.x, character.transform.forward.z);
+		//Vector2 targetDir = targetVector - transformVector;
+		//angleBetween = Vector3.Angle(targetDir, forwardVector);
+
+		//
+		Vector2 targetVector = new Vector2(currentX, currentZ);
+		Vector2 transformVector = new Vector2(character.transform.position.x, character.transform.position.z);
+		Vector2 forwardVector = new Vector2(0,0);
+		float angleOfWaypoint = Vector3.Angle(targetVector,forwardVector);
+		float angleOfFacing = character.transform.rotation.eulerAngles.y;
+
+		angleBetween = angleOfFacing + angleOfWaypoint;
+
+
+
+		Debug.Log(angleOfWaypoint); // 90
+		Debug.Log(angleOfFacing); // <1 - why? is there some implicite calculation?
+		Debug.Log(angleBetween); // > 440
+
+
+		// here the calculation for the belt is happening. we need y and x coordinates
+		// they are in lsb and msb, a byte like way to whrite numbers
+		//lsb = (byte)(character.transform.eulerAngles.y % 256);
+		//msb = (byte)Math.Floor (character.transform.eulerAngles.y / 256);

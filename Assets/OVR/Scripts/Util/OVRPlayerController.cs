@@ -20,7 +20,7 @@ limitations under the License.
 ************************************************************************************/
 
 using UnityEngine;
-
+using System.Collections;
 /// <summary>
 /// Controls the player's movement in virtual reality. 
 /// </summary>
@@ -85,7 +85,7 @@ public class OVRPlayerController : MonoBehaviour
     protected CharacterController Controller = null;
     protected OVRCameraRig CameraController = null;
 
-    private float MoveScaleMultiplier = 1.0f;
+    public float MoveScaleMultiplier = 1.0f;
     private float RotationScaleMultiplier = 1.0f;
     private bool  SkipMouseRotation = false;
     private bool  HaltUpdateMovement = false;
@@ -205,7 +205,7 @@ public class OVRPlayerController : MonoBehaviour
             dpad_move = true;
         }
 
-        MoveScale = 1.0f;
+        MoveScale = 10.0f;
 
         if ((moveForward && moveLeft) || (moveForward && moveRight) ||
             (moveBack && moveLeft) || (moveBack && moveRight))
@@ -398,4 +398,19 @@ public class OVRPlayerController : MonoBehaviour
         euler.y = YRotation;
         transform.rotation = Quaternion.Euler(euler);
     }
+/// <summary>
+/// private changes to the prefab start from here
+/// </summary>
+	public static int i = 0;
+	public static int pointToTemp;
+	private string lookingForByName;
+	public void OnTriggerEnter(Collider other)
+	{
+		pointToTemp = PathFinding.pointTo;
+		lookingForByName = pointToTemp.ToString ();
+		if (lookingForByName == other.gameObject.name) {
+						Destroy (other.gameObject);
+						i += 1;
+				}
+	}
 }
